@@ -17,13 +17,13 @@ export const singupValidator = Joi.object({
     "string.min": "password phải có ít nhất {#limit} ký tự",
     "string.max": "password phải có ít nhất {#limit + 1} ký tự ",
   }),
-  confirmPassword: Joi.string().required().min(6).max(255).message({
-    "string.empty": "confirmPassword không được để trống!",
-    "any.required": "confirmPassword là bắt buộc!",
-    "string.min": "confirmPassword phải có ít nhất {#limit} ký tự",
-    "string.max": "confirmPassword phải có ít nhất {#limit + 1} ký tự ",
-    "any.only": "confirmPassword không khớp với password",
-  }),
+  // confirmPassword: Joi.string().required().min(6).max(255).message({
+  //   "string.empty": "confirmPassword không được để trống!",
+  //   "any.required": "confirmPassword là bắt buộc!",
+  //   "string.min": "confirmPassword phải có ít nhất {#limit} ký tự",
+  //   "string.max": "confirmPassword phải có ít nhất {#limit + 1} ký tự ",
+  //   "any.only": "confirmPassword không khớp với password",
+  // }),
   role:Joi.string()
 });
 

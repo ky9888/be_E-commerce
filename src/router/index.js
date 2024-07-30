@@ -1,18 +1,18 @@
 import express from "express";
 import routerAuth from "./auth.js";
-import routerflight from "./flight.js";
-import routerTicker from "./ticker.js";
-import routerHotel from "./hotel.js";
-import routerRoomHotel from "./roomHotel.js";
+import routerImages from "./uploadImg.js";
+import productRouter from "./products.js";
+import momo from "./momoRT.js";
+
 
 
 const router = express.Router();
 
 router.use("/auth", routerAuth);
-router.use("/auth", routerflight);
-router.use("/auth", routerTicker);
-router.use("/auth", routerHotel);
-router.use("/auth", routerRoomHotel);
+router.use("/images",routerImages );
+router.use("/products",productRouter)
+router.use("/momo",momo)
+
 
 
 
