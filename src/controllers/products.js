@@ -1,4 +1,5 @@
 import products from "../models/product.js";
+import { remove as removeDiacritics } from 'diacritics';
 
 export const createProducts = async (req, res) => {
   const newProduct = new products(req.body);
@@ -16,6 +17,19 @@ export const createProducts = async (req, res) => {
   }
 };
 
+const diacriticMap = {
+  'dong ho': 'đồng hồ',
+  'ao': 'áo',
+  'giay': 'giày',
+  
+};
+
+const convertToDiacritics = (str) => {
+  const words = str.split(' ');
+  const convertedWords = words.map(word => diacriticMap[word] || word);
+  return convertedWords.join(' ');
+};
+
 export const getAllProduct = async (req, res) => {
   try {
     const { nameTitle, ...query } = req.query;
@@ -23,10 +37,19 @@ export const getAllProduct = async (req, res) => {
     let productsData;
     
     if (nameTitle) {
-      // Using a case-insensitive partial matching regex
-      productsData = await products.find({
-        nameTitle: { $regex: new RegExp(nameTitle.split(' ').join('.*'), 'i') }
-      });
+      // Convert input to diacritics if possible
+      const diacriticTitle = convertToDiacritics(nameTitle);
+      
+      // Normalize the search query by removing diacritics
+      const normalizedTitle = removeDiacritics(diacriticTitle).split(' ').join('.*');
+      
+      // Fetch all products from the database
+      const allProducts = await products.find({});
+      
+      // Filter products based on the normalized title
+      productsData = allProducts.filter(product => 
+        removeDiacritics(product.nameTitle).match(new RegExp(normalizedTitle, 'i'))
+      );
     } else {
       productsData = await products.find(query);
     }
@@ -39,7 +62,7 @@ export const getAllProduct = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: 'Error fetching products' });
   }
-}
+};
 
 
 export const getDetailProduct=async(req,res)=>{
