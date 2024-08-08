@@ -68,7 +68,7 @@ routerAuth.get(
     })(req, res, next);
   },
   (req, res) => {
-    res.redirect(`${process.env.URL_CLIENT}/loginSuccess/${req.user?.id}`);
+    res.redirect(`${process.env.URL_CLIENT}`);
   }
 );
 routerAuth.post("/login-success/:googleId",loginSuccess)
