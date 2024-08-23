@@ -39,7 +39,7 @@ connect(URI_DB);
 // }));
 
 app.use(cors({
-  origin: process.env.URL_CLIENT || process.env.URL
+  origin: process.env.URL_CLIENT 
 }));
 app.use(bodyParser.json());
 app.use(express.json());
