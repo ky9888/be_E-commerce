@@ -39,8 +39,8 @@ connect(URI_DB);
 // }));
 
 app.use(cors({
-  origin: process.env.URL_CLIENT
-}))
+  origin: process.env.URL_CLIENT || process.env.URL
+}));
 app.use(bodyParser.json());
 app.use(express.json());
 
