@@ -5,20 +5,13 @@ import router from "./src/router/index.js";
 import cors from "cors";
 import bodyParser from "body-parser";
 import "./src/passport.js";
-// import session from "express-session";
-// import passport from "passport";
-// import cookieSession from 'cookie-session'
+
 const app = express();
 
 dotenv.config();
 const PORT = process.env.PORT || process.env.URL_API;
 const URI_DB = process.env.URI_DB;
-connect(URI_DB, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  connectTimeoutMS: 30000,  
-  socketTimeoutMS: 60000  
-});
+connect(URI_DB);
 
 app.use(cors({
   origin: process.env.URL_CLIENT 
