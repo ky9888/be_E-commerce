@@ -1,7 +1,6 @@
 {
-    "functions": {
-      "api/**/*": {
-        "maxDuration": 30
-      }
-    }
-  }
+  "version": 2,
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api" }
+  ]
+}
