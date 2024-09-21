@@ -11,7 +11,9 @@ const app = express();
 dotenv.config();
 const PORT = process.env.PORT || process.env.URL_API;
 const URI_DB = process.env.URI_DB;
-connect(URI_DB);
+connect(URI_DB,{
+  connectTimeoutMS: 10000,  
+});
 
 app.use(cors({
   origin: process.env.URL_CLIENT 
