@@ -15,7 +15,7 @@ connect(URI_DB,{
   useNewUrlParser: true,
   useUnifiedTopology: true,
   serverSelectionTimeoutMS: 5000,  
-  socketTimeoutMS: 45000  
+  socketTimeoutMS: 10000  
 });
 
 app.use(cors({
