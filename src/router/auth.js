@@ -35,22 +35,7 @@ routerAuth.get("/login/success", (req, res) => {
     console.log(error);
   }
 });
-// routerAuth.get("/login/failed", (req, res) => {
-//   res.status(401).json({
-//     success: false,
-//     message: "failure",
-//   });
-// });
 
-// routerAuth.get("/logout", (req, res) => {
-//   req.logout();
-//   res.redirect(CLIENT_URL);
-// });
-
-// routerAuth.get(
-//   "/google",
-//   passport.authenticate("google", { scope: ["email", "profile"] })
-// );
 routerAuth.get(
   "/google",
   passport.authenticate("google", {
