@@ -1,6 +1,8 @@
 import products from "../models/product.js";
 import { remove as removeDiacritics } from 'diacritics';
 import redis from 'redis';
+import dotenv from "dotenv";
+dotenv.config();
 
 const diacriticMap = {
   'dong ho': 'đồng hồ',
@@ -9,7 +11,7 @@ const diacriticMap = {
 };
 
 // Initialize Redis client
-const client = redis.createClient({ url: 'redis://localhost:6379' });
+const client = redis.createClient({ url: process.env.URL_REDIS });
 
 client.connect();
 
