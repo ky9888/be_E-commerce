@@ -1,87 +1,5 @@
 import products from "../models/product.js";
-import { remove as removeDiacritics } from 'diacritics';
-import redis from 'redis';
-import dotenv from "dotenv";
-dotenv.config();
-
-const diacriticMap = {
-  'dong ho': 'đồng hồ',
-  'ao': 'áo',
-  'giay': 'giày',
-};
-
-// Initialize Redis client
-const client = redis.createClient({ url: process.env.URL_REDIS });
-
-client.connect();
-
-const convertToDiacritics = (str) => {
-  const words = str.split(' ');
-  const convertedWords = words.map(word => diacriticMap[word] || word);
-  return convertedWords.join(' ');
-};
-
-export const getAllProduct = async (req, res) => {
-  try {
-    const { nameTitle, ...query } = req.query;
-
-    let productsData;
-
-    // Check Redis cache first
-    const cacheKey = `products:${nameTitle || 'all'}:${JSON.stringify(query)}`;
-    const cachedData = await client.get(cacheKey);
-
-    if (cachedData) {
-      console.log('Cache hit');
-      return res.status(200).json({
-        message: nameTitle ? "Tìm sản phẩm thành công" : "Lấy sản phẩm thành công",
-        data: JSON.parse(cachedData)
-      });
-    }
-
-    // Fetch products from MongoDB if not in cache
-    if (nameTitle) {
-      const diacriticTitle = convertToDiacritics(nameTitle);
-      const normalizedTitle = removeDiacritics(diacriticTitle).split(' ').join('.*');
-      const allProducts = await products.find({});
-      productsData = allProducts.filter(product =>
-        removeDiacritics(product.nameTitle).match(new RegExp(normalizedTitle, 'i'))
-      );
-    } else {
-      productsData = await products.find(query);
-    }
-
-    // Cache the result in Redis for future requests
-    await client.set(cacheKey, JSON.stringify(productsData), {
-      EX: 3600, // Cache for 1 hour
-    });
-
-    return res.status(200).json({
-      message: nameTitle ? "Tìm sản phẩm thành công" : "Lấy sản phẩm thành công",
-      data: productsData
-    });
-
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error fetching products' });
-  }
-};
-
-
-
-
-export const getDetailProduct=async(req,res)=>{
-  try {
-      const productDetail=await products.findById(req.params.id)
-      return res.status(200).json({
-          message:"tìm  sản phẩm thành công",
-          data:productDetail
-      }) 
-  } catch (error) {
-      res.status(500).send(error.message);
-      
-  }
-}
+import { remove as removeDiacritics } from "diacritics";
 
 export const createProducts = async (req, res) => {
   const newProduct = new products(req.body);
@@ -94,11 +12,113 @@ export const createProducts = async (req, res) => {
   } catch (error) {
     res.status(400).json({
       message: "tạo sản phẩm thất bại",
-      
     });
   }
 };
 
+const diacriticMap = {
+  "dong ho": "đồng hồ",
+  ao: "áo",
+  giay: "giày",
+};
+
+const convertToDiacritics = (str) => {
+  const words = str.split(" ");
+  const convertedWords = words.map((word) => diacriticMap[word] || word);
+  return convertedWords.join(" ");
+};
+
+export const getAllProduct = async (req, res) => {
+  try {
+    const { name, ...query } = req.query;
+
+    let productsData;
+
+    if (name) {
+      const diacriticTitle = convertToDiacritics(name);
+
+      const normalizedTitle = removeDiacritics(diacriticTitle)
+        .split(" ")
+        .join(".*");
+
+      const allProducts = await products.find({});
+
+      productsData = allProducts.filter((product) =>
+        removeDiacritics(product.name).match(new RegExp(normalizedTitle, "i"))
+      );
+    } else {
+      productsData = await products.find(query);
+    }
+
+    return res.status(200).json({
+      message: name ? "Tìm sản phẩm thành công" : "Lấy sản phẩm thành công",
+      data: productsData,
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching products" });
+  }
+};
+
+export const getDetailProduct = async (req, res) => {
+  let productName = req.params.name;
+
+  try {
+    const productDetail = await products.findOne({ name: productName });
+    return res.status(200).json({
+      message: "tìm  sản phẩm thành công",
+      data: productDetail,
+      date: productName,
+    });
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+
+export const getHighestPrice = async (req, res) => {
+  try {
+    const { name, ...query } = req.query;
+
+    let productsData;
+
+    productsData = await products.find(query);
+
+    return res.status(200).json({
+      message: name ? "Tìm sản phẩm thành công" : "Lấy sản phẩm thành công",
+      data: productsData,
+    });
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+export const getTopicProducts = async (req, res) => {
+  let productTopic = req.params.topic;
+
+  try {
+    const productDetailTopic = await products.find({ topic: productTopic });
+    return res.status(200).json({
+      message: "tìm  sản phẩm thành công",
+      data: productDetailTopic,
+      date: productTopic,
+    });
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+export const getTypeProducts = async (req, res) => {
+  let productType = req.params.type;
+  console.log(productType);
+
+  try {
+    const productDetailType = await products.find({ type: productType });
+    return res.status(200).json({
+      message: "tìm  sản phẩm thành công",
+      data: productDetailType,
+      date: productType,
+    });
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
 export const updateProduct = async (req, res) => {
   try {
     const updateProducts = await products.findByIdAndUpdate(
@@ -123,4 +143,3 @@ export const deleteProduct = async (req, res) => {
     res.status(500).send(error.message);
   }
 };
-
