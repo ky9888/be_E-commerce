@@ -12,7 +12,7 @@ dotenv.config();
 export const config = {
   runtime: 'edge',
 };
-const PORT = process.env.PORT || process.env.URL_API;
+const PORT = process.env.PORT || 3000;
 const URI_DB = process.env.URI_DB;
 connect(URI_DB);
 
